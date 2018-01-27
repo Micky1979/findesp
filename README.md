@@ -7,11 +7,11 @@ findesp /
 ```
 or
 ``` bash
-findesp /dev/disk04s1
+findesp /dev/disk04s3
 ```
 or
 ``` bash
-findesp disk05s1
+findesp disk05s2
 ```
 or
 ``` bash
