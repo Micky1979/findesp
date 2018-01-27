@@ -18,7 +18,8 @@ or
 findesp disk2
 ```
 
+It returns the BSD Name of the ESP like "disk0s1"
+Also support finding associated ESP of any apfs container or apfs partition.
 
-Also support finding associated ESP of any apfs container or apfs partition
-
+I made this script for Clover Bootloader if devs are intrested, may be used in the installer.
 
