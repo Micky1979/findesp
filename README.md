@@ -23,3 +23,9 @@ Also support finding associated ESP of any apfs container or apfs partition.
 
 I made this script for Clover Bootloader if devs are intrested, may be used in the installer.
 
+# How to build it from command line
+``` bash
+cd /folder/containing/findesp
+xcodebuild -project findesp.xcodeproj -alltargets -configuration Release
+```
+...binary should be found at  ../findesp/build/Release/
