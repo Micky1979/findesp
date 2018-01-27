@@ -25,7 +25,7 @@ I made this script for Clover Bootloader/Chameleon/Enoch if devs are intrested, 
 
 # How to build it from command line
 ``` bash
-cd /folder/containing/findesp
+cd /folder/containing/findesp/findesp.xcodeproj
 xcodebuild -project findesp.xcodeproj -alltargets -configuration Release
 ```
 ...binary should be found at  ../findesp/build/Release/
