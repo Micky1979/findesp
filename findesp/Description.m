@@ -3,7 +3,7 @@
 //  findesp
 //
 //  Created by Micky1979 on 27/01/18.
-//  Copyright © 2018 clover. All rights reserved.
+//  Copyright © 2018 Micky1979. All rights reserved.
 //
 // This code comes from Clover Configurator Pro.app (https://github.com/Micky1979/Clover-Configurator-Pro)
 // converted back from Swift 4.
