@@ -42,6 +42,6 @@ esp=`findesp $disk`
 if [[ -n $esp ]] && [[ $esp == disk* ]] ; then
   echo "EFI System Partition for $disk is $esp"
 else
-  echo "no ESP was found.."
+  echo "ESP not found.."
 fi
 ```
