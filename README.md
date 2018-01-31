@@ -32,7 +32,7 @@ xcodebuild -project findesp.xcodeproj -alltargets -configuration Release
 ...binary should be found at  ../findesp/build/Release/
 
 
-# how to use in a script
+# How to use in a script
 Bashers can found easy to check for the output this way:
 
 ``` bash
