@@ -15,48 +15,47 @@
 
 @implementation Description
 + (NSDictionary *)getDescriptionsFrom:(NSString*)diskOrMountPoint {
-  NSString *device;
-  NSDictionary *dict;
   int                 err = 0;
   DADiskRef           disk = NULL;
   DASessionRef        session;
   CFDictionaryRef     descDict = NULL;
-  CFURLRef            volURL;
-  
+  CFURLRef            volURL = NULL;
   session = DASessionCreate(NULL);
   if (session == NULL) err = EINVAL;
   
-  if ([diskOrMountPoint hasPrefix:@"/"] &&
-      ![diskOrMountPoint hasPrefix:@"/dev/disk"] &&
-      ![diskOrMountPoint hasPrefix:@"disk"] &&
-      [[NSFileManager defaultManager] fileExistsAtPath:diskOrMountPoint] &&
-      (err == 0)) {
-    volURL = (CFURLRef)CFBridgingRetain([NSURL fileURLWithPath:diskOrMountPoint]);
-    disk = DADiskCreateFromVolumePath(NULL, session, volURL);
-  }
-  else if (([diskOrMountPoint hasPrefix:@"/dev/disk"] || [diskOrMountPoint hasPrefix:@"disk"])
-           && (err == 0)) {
-    if ([diskOrMountPoint hasPrefix:@"/dev/disk"]) {
-      device = [diskOrMountPoint stringByReplacingOccurrencesOfString:@"/dev/" withString:@""];
-    } else {
-      device = diskOrMountPoint;
-    }
-    disk = DADiskCreateFromBSDName(NULL, session, [device UTF8String]);
-  } else {
-    // too bad!!
-    return NULL;
-  }
-  
-  if (session == NULL) err = EINVAL;
-  
   if (err == 0) {
-    descDict = DADiskCopyDescription(disk);
-    if (descDict == NULL) err = EINVAL;
-    
-    dict = [NSDictionary dictionaryWithDictionary:(NSDictionary*)CFBridgingRelease(descDict)];
-    return dict;
+    if (([diskOrMountPoint hasPrefix:@"/dev/disk"] || [diskOrMountPoint hasPrefix:@"disk"])) {
+      NSString *bsd;
+      if ([diskOrMountPoint hasPrefix:@"/dev/disk"] ) {
+        bsd = [diskOrMountPoint stringByReplacingOccurrencesOfString:@"/dev/" withString:@""];
+      } else {
+        bsd = diskOrMountPoint;
+      }
+      disk = DADiskCreateFromBSDName(NULL,
+                                     session,
+                                     bsd.UTF8String);
+    } else if ([[NSFileManager defaultManager] fileExistsAtPath:diskOrMountPoint]) {
+      
+      volURL = CFBridgingRetain([NSURL fileURLWithPath:diskOrMountPoint]);
+      disk = DADiskCreateFromVolumePath(NULL,
+                                        session,
+                                        volURL);
+      
+      if (volURL) {
+        CFRelease(volURL);
+      }
+    }
+    if (session) {
+      CFRelease(session);
+    }
+    if (disk != NULL) {
+      descDict = DADiskCopyDescription(disk);
+      if (descDict != NULL) {
+        return [NSDictionary dictionaryWithDictionary:(NSDictionary*)CFBridgingRelease(descDict)];
+      }
+    }
   }
-  return NULL;
+  return nil;
 }
 
 + (NSArray *)findEFIDisks {
@@ -76,12 +75,11 @@
         continue;
       }
       const void *bsd = CFDictionaryGetValue(serviceDictionary, @kIOBSDNameKey);
+      
       if (bsd) {
         NSString *disk = CFBridgingRelease(bsd);
-        
         NSDictionary *desc = [self getDescriptionsFrom:disk];
         NSString *DAMediaName = [desc objectForKey:[NSString stringWithFormat:@"%@", kDADiskDescriptionMediaNameKey]];
-        
         if ([DAMediaName.lowercaseString isEqualToString:@"efi system partition"]) {
           [esps addObject:disk];
         }

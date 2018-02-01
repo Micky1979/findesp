@@ -18,24 +18,23 @@ int main(int argc, const char * argv[]) {
   @autoreleasepool {
     if (argc == 2) {
       NSDictionary *desc = [Description getDescriptionsFrom:[NSString stringWithFormat:@"%s", argv[1]]];
+
       if (desc == nil) {
         return 0;
       }
       
       NSString *DABusPath = [desc objectForKey:[NSString stringWithFormat:@"%@", kDADiskDescriptionBusPathKey]];
-      
       NSArray *esps = [Description findEFIDisks];
-      
+  
       for (NSString *disk in esps) {
         NSDictionary *espDesc = [Description getDescriptionsFrom:disk];
         NSString *espBusPath = [espDesc objectForKey:[NSString stringWithFormat:@"%@", kDADiskDescriptionBusPathKey]];
         if ([DABusPath isEqualToString:espBusPath]) {
-          printf("%s", disk.UTF8String);
+          printf("%s\n", disk.UTF8String);
           break;
         }
       }
     }
-    
   }
   return 0;
 }
