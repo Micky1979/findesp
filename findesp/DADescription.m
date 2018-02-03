@@ -52,6 +52,7 @@
     
     if (disk != NULL) {
       descDict = DADiskCopyDescription(disk);
+      CFRelease(disk);
       if (descDict != NULL) {
         return [NSDictionary dictionaryWithDictionary:(NSDictionary*)CFBridgingRelease(descDict)];
       }
@@ -69,7 +70,7 @@
                                    &entry_iterator) == kIOReturnSuccess) {
     io_registry_entry_t serviceObject;
     while ((serviceObject = IOIteratorNext(entry_iterator))) {
-      CFMutableDictionaryRef serviceDictionary;
+      CFMutableDictionaryRef serviceDictionary = NULL;
       if (IORegistryEntryCreateCFProperties(serviceObject,
                                             &serviceDictionary,
                                             kCFAllocatorDefault,
@@ -77,6 +78,10 @@
         continue;
       }
       const void *bsd = CFDictionaryGetValue(serviceDictionary, @kIOBSDNameKey);
+      
+      if (serviceDictionary != NULL) {
+        CFRelease(serviceDictionary);
+      }
       
       if (bsd) {
         NSString *disk = CFBridgingRelease(bsd);

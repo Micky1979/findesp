@@ -14,13 +14,20 @@
 #import <Foundation/Foundation.h>
 #import "DADescription.h"
 
+#define cmdVersion "1.1"
+
 int main(int argc, const char * argv[]) {
   @autoreleasepool {
     if (argc == 2) {
+      if (strcmp(argv[1], "-v") == 0) {
+        printf("findesp version %s\n", cmdVersion);
+        return 0;
+      }
+      
       NSDictionary *desc = [DADescription getDescriptionsFrom:[NSString stringWithFormat:@"%s", argv[1]]];
 
       if (desc == nil) {
-        return 0;
+        exit(EXIT_FAILURE); // that means user given as argument an invalid or not existing disk or mount point
       }
       
       NSString *DABusPath = [desc objectForKey:[NSString stringWithFormat:@"%@", kDADiskDescriptionBusPathKey]];
