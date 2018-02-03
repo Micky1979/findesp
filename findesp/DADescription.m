@@ -1,5 +1,5 @@
 //
-//  Description.m
+//  DADescription.m
 //  findesp
 //
 //  Created by Micky1979 on 27/01/18.
@@ -11,9 +11,9 @@
 // (i.e. must be used only in free sowftware with opensourced code)
 //
 
-#import "Description.h"
+#import "DADescription.h"
 
-@implementation Description
+@implementation DADescription
 + (NSDictionary *)getDescriptionsFrom:(NSString*)diskOrMountPoint {
   int                 err = 0;
   DADiskRef           disk = NULL;
@@ -45,9 +45,11 @@
         CFRelease(volURL);
       }
     }
+    
     if (session) {
       CFRelease(session);
     }
+    
     if (disk != NULL) {
       descDict = DADiskCopyDescription(disk);
       if (descDict != NULL) {
@@ -79,9 +81,11 @@
       if (bsd) {
         NSString *disk = CFBridgingRelease(bsd);
         NSDictionary *desc = [self getDescriptionsFrom:disk];
-        NSString *DAMediaName = [desc objectForKey:[NSString stringWithFormat:@"%@", kDADiskDescriptionMediaNameKey]];
-        if ([DAMediaName.lowercaseString isEqualToString:@"efi system partition"]) {
-          [esps addObject:disk];
+        if (desc != nil) {
+          NSString *DAMediaName = [desc objectForKey:[NSString stringWithFormat:@"%@", kDADiskDescriptionMediaNameKey]];
+          if ([DAMediaName.lowercaseString isEqualToString:@"efi system partition"]) {
+            [esps addObject:disk];
+          }
         }
       }
     }

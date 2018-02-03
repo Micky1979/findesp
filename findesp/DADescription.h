@@ -1,5 +1,5 @@
 //
-//  Description.h
+//  DADescription.h
 //  findesp
 //
 //  Created by Micky1979 on 27/01/18.
@@ -14,7 +14,7 @@
 #import <Foundation/Foundation.h>
 #import <DiskArbitration/DiskArbitration.h>
 
-@interface Description : NSObject
+@interface DADescription : NSObject
 + (NSDictionary *)getDescriptionsFrom:(NSString*)diskOrMountPoint;
 + (NSArray *)findEFIDisks;
 @end
